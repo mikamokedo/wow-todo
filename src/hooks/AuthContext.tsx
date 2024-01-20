@@ -24,7 +24,7 @@ export interface Task {
   description: string;
   status: TaskStatus;
   id: string;
-  data?: Date;
+  date?: Date;
 }
 
 interface AuthContextProps {

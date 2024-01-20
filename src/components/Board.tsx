@@ -6,8 +6,9 @@ interface BoardProps {
   name: string;
   tasks: Task[];
   color: string;
+  setEditId: (id: string) => void;
 }
-const Board: React.FC<BoardProps> = ({ name, tasks, color }) => {
+const Board: React.FC<BoardProps> = ({ name, tasks, color, setEditId }) => {
   return (
     <div className={`rounded-md w-1/4 border`}>
       <div
@@ -17,7 +18,7 @@ const Board: React.FC<BoardProps> = ({ name, tasks, color }) => {
       </div>
       <div className="p-3 gap-3 flex flex-col">
         {tasks.map((task) => (
-          <TaskItem task={task} key={task.id} />
+          <TaskItem task={task} key={task.id} onClick={setEditId} />
         ))}
       </div>
     </div>
