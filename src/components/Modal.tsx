@@ -23,7 +23,7 @@ const Modal: React.FC<ModalProps> = ({
         >
           X
         </button>
-        <h2 className="text-lg font-bold mb-10 text-center">Create Task</h2>
+        <h2 className="text-lg font-bold mb-10 text-center">Task</h2>
         <div className="flex flex-col">
           <input
             className="border border-gray-300 rounded-lg p-2"

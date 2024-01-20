@@ -8,6 +8,7 @@ import React, {
 import { useNavigate } from 'react-router-dom';
 
 export enum TaskStatus {
+  BACKLOG = 'BACK_LOG',
   TODO = 'TODO',
   IN_PROGRESS = 'IN_PROGRESS',
   DONE = 'DONE',

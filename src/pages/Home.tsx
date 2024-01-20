@@ -3,10 +3,11 @@ import Board from '../components/Board';
 import { Task, TaskStatus, useAuthContext } from '../hooks/AuthContext';
 import Header, { FormTaskData } from '../components/Header';
 import useDebounce from '../hooks/useDebounce';
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import Modal from '../components/Modal';
 
 const boards = [
+  { name: 'Backlog', id: TaskStatus.BACKLOG, color: 'bg-gray-500' },
   { name: 'Todo', id: TaskStatus.TODO, color: 'bg-gray-300' },
   { name: 'In Progress', id: TaskStatus.IN_PROGRESS, color: 'bg-yellow-300' },
   { name: 'Done', id: TaskStatus.DONE, color: 'bg-green-300' },
@@ -87,7 +88,7 @@ const Home = () => {
   };
 
   return (
-    <div className="">
+    <div className="px-3">
       {isCreateTaskModalOpen && (
         <Modal
           errors={errors}
@@ -110,6 +111,7 @@ const Home = () => {
             key={board.id}
             color={board.color}
             setEditId={handleEditTask}
+            id={board.id}
           />
         ))}
       </div>
