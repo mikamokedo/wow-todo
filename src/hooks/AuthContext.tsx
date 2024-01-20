@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-enum TaskStatus {
+export enum TaskStatus {
   TODO = 'TODO',
   IN_PROGRESS = 'IN_PROGRESS',
   DONE = 'DONE',
@@ -24,6 +24,7 @@ export interface Task {
   description: string;
   status: TaskStatus;
   id: string;
+  data?: Date;
 }
 
 interface AuthContextProps {
@@ -31,6 +32,8 @@ interface AuthContextProps {
   logout: () => void;
   userName: string;
   tasks: Task[];
+  handleUpdateTask: (task: Task) => void;
+  handleCreateTask: (task: Task) => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -38,6 +41,8 @@ export const AuthContext = createContext<AuthContextProps>({
   logout: () => {},
   userName: '',
   tasks: [],
+  handleUpdateTask: () => {},
+  handleCreateTask: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
@@ -59,14 +64,55 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     localStorage.removeItem('user');
   };
 
+  const handleUpdateTask = (task: Task) => {
+    const newTasks = tasks.map((t) => {
+      if (t.id === task.id) {
+        return task;
+      }
+      return t;
+    });
+    setTasks(newTasks);
+    const localStorageUSers = localStorage.getItem('users');
+    if (localStorageUSers) {
+      const users = JSON.parse(localStorageUSers);
+
+      const newUsers = users.map((user: User) => {
+        if (user.username === userName) {
+          return { ...user, tasks: newTasks };
+        }
+        return user;
+      });
+      localStorage.setItem('users', JSON.stringify(newUsers));
+    }
+  };
+
+  const handleCreateTask = (task: Task) => {
+    const newTasks = [...tasks, task];
+    setTasks(newTasks);
+    const localStorageUSers = localStorage.getItem('users');
+    if (localStorageUSers) {
+      const users = JSON.parse(localStorageUSers);
+
+      const newUsers = users.map((user: User) => {
+        if (user.username === userName) {
+          return { ...user, tasks: newTasks };
+        }
+        return user;
+      });
+      localStorage.setItem('users', JSON.stringify(newUsers));
+    }
+  };
+
   useEffect(() => {
     const localStorageUSers = localStorage.getItem('users');
     const currentUser = localStorage.getItem('user');
     if (currentUser) {
-      setUserName(currentUser);
+      setUserName(JSON.parse(currentUser));
       if (localStorageUSers) {
         const users = JSON.parse(localStorageUSers);
-        const user = users.find((user: User) => user.username === currentUser);
+        const user = users.find(
+          (user: User) => user.username === JSON.parse(currentUser)
+        );
         if (user) {
           setTasks(user.tasks);
         }
@@ -78,7 +124,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ userName, login, logout, tasks }}>
+    <AuthContext.Provider
+      value={{
+        userName,
+        login,
+        logout,
+        tasks,
+        handleUpdateTask,
+        handleCreateTask,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
