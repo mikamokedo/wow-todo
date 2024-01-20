@@ -14,7 +14,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onClick }) => {
       isDragging: monitor.isDragging(),
     }),
   }));
-  const isFutureDate = task.date && new Date(task.date) < new Date();
+  const isFutureDate =
+    task.date && new Date(task.date).getTime() < new Date().getTime();
 
   return (
     <div
