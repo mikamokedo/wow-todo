@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/AuthContext';
 
 interface FormData {
   username: string;
@@ -9,6 +10,7 @@ interface FormData {
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -21,13 +23,13 @@ const Login = () => {
     const localStorageUSer = localStorage.getItem('users');
     if (localStorageUSer) {
       const users = JSON.parse(localStorageUSer);
-      if (
-        users.find(
-          (user: FormData) =>
-            user.username === data.username && user.password === data.password
-        )
-      ) {
+      const user = users.find(
+        (user: FormData) =>
+          user.username === data.username && user.password === data.password
+      );
+      if (user) {
         navigate('/home');
+        login(user.username, user?.tasks ?? []);
       } else {
         setIsFailed(true);
       }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../hooks/AuthContext';
 
 interface FormData {
   username: string;
@@ -16,6 +17,7 @@ const Login = () => {
     formState: { errors },
   } = useForm<FormData>();
   const [isFailed, setIsFailed] = React.useState(false);
+  const { login } = useAuthContext();
 
   const onSubmit = (data: FormData) => {
     setIsFailed(false);
@@ -25,15 +27,23 @@ const Login = () => {
       if (users.find((user: FormData) => user.username === data.username)) {
         setIsFailed(true);
       } else {
-        users.push({ username: data.username, password: data.password });
+        users.push({
+          username: data.username,
+          password: data.password,
+          tasks: [],
+        });
         localStorage.setItem('users', JSON.stringify(users));
+        login(data.username, []);
         navigate('/');
       }
     } else {
       localStorage.setItem(
         'users',
-        JSON.stringify([{ username: data.username, password: data.password }])
+        JSON.stringify([
+          { username: data.username, password: data.password, tasks: [] },
+        ])
       );
+      login(data.username, []);
       navigate('/');
     }
   };
