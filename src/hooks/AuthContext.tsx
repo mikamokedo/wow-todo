@@ -8,7 +8,6 @@ import React, {
 import { useNavigate } from 'react-router-dom';
 
 export enum TaskStatus {
-  BACKLOG = 'BACK_LOG',
   TODO = 'TODO',
   IN_PROGRESS = 'IN_PROGRESS',
   DONE = 'DONE',
@@ -35,6 +34,7 @@ interface AuthContextProps {
   tasks: Task[];
   handleUpdateTask: (task: Task) => void;
   handleCreateTask: (task: Task) => void;
+  handleDeleteTask: (task: string) => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -44,6 +44,7 @@ export const AuthContext = createContext<AuthContextProps>({
   tasks: [],
   handleUpdateTask: () => {},
   handleCreateTask: () => {},
+  handleDeleteTask: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
@@ -104,6 +105,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const handleDeleteTask = (id: string) => {
+    const newTasks = tasks.filter((task) => task.id !== id);
+    setTasks(newTasks);
+    const localStorageUSers = localStorage.getItem('users');
+    if (localStorageUSers) {
+      const users = JSON.parse(localStorageUSers);
+
+      const newUsers = users.map((user: User) => {
+        if (user.username === userName) {
+          return { ...user, tasks: newTasks };
+        }
+        return user;
+      });
+      localStorage.setItem('users', JSON.stringify(newUsers));
+    }
+  };
+
   useEffect(() => {
     const localStorageUSers = localStorage.getItem('users');
     const currentUser = localStorage.getItem('user');
@@ -133,6 +151,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         tasks,
         handleUpdateTask,
         handleCreateTask,
+        handleDeleteTask,
       }}
     >
       {children}

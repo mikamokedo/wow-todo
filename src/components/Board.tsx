@@ -8,9 +8,17 @@ interface BoardProps {
   color: string;
   setEditId: (id: string) => void;
   id: TaskStatus;
+  onDelete: (id: string) => void;
 }
 
-const Board: React.FC<BoardProps> = ({ name, tasks, color, setEditId, id }) => {
+const Board: React.FC<BoardProps> = ({
+  name,
+  tasks,
+  color,
+  setEditId,
+  id,
+  onDelete,
+}) => {
   const { handleUpdateTask, tasks: taskList } = useAuthContext();
   const [{ isOver }, drop] = useDrop(
     () => ({
@@ -43,7 +51,12 @@ const Board: React.FC<BoardProps> = ({ name, tasks, color, setEditId, id }) => {
       </div>
       <div className="p-3 gap-3 flex flex-col">
         {tasks.map((task) => (
-          <TaskItem task={task} key={task.id} onClick={setEditId} />
+          <TaskItem
+            task={task}
+            key={task.id}
+            onClick={setEditId}
+            onDelete={onDelete}
+          />
         ))}
       </div>
     </div>

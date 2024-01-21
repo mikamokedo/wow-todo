@@ -7,14 +7,14 @@ import { useForm } from 'react-hook-form';
 import Modal from '../components/Modal';
 
 const boards = [
-  { name: 'Backlog', id: TaskStatus.BACKLOG, color: 'bg-gray-500' },
   { name: 'Todo', id: TaskStatus.TODO, color: 'bg-gray-300' },
   { name: 'In Progress', id: TaskStatus.IN_PROGRESS, color: 'bg-yellow-300' },
   { name: 'Done', id: TaskStatus.DONE, color: 'bg-green-300' },
 ];
 
 const Home = () => {
-  const { tasks, handleCreateTask, handleUpdateTask } = useAuthContext();
+  const { tasks, handleCreateTask, handleUpdateTask, handleDeleteTask } =
+    useAuthContext();
   const [filteredTasks, setFilteredTasks] = React.useState<Task[]>([]);
   const [search, setSearch] = React.useState('');
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
@@ -112,6 +112,7 @@ const Home = () => {
             color={board.color}
             setEditId={handleEditTask}
             id={board.id}
+            onDelete={handleDeleteTask}
           />
         ))}
       </div>
