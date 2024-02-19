@@ -47,7 +47,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onClick, onDelete }) => {
         <div
           className={`text-xs text-right ${isFutureDate ? 'text-red-500' : ''}`}
         >
-          {task?.date}
+          {String(task?.date)}
         </div>
       </div>
     </div>
